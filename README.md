@@ -28,4 +28,4 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - python3 ./train.py --dataroot /root/PycharmProjects/DeblurGAN/data/combined --learn_residual True --resize_or_crop crop --fineSize 256 --gpu_ids -1 --display_id -1
  
 ### Test
--python3 ./test.py --dataroot /root/PycharmProjects/DeblurGAN/data/combined --model test --dataset_mode single --learn_residual
+- python3 ./test.py --dataroot /root/PycharmProjects/DeblurGAN/data/combined --model test --dataset_mode single --learn_residual
