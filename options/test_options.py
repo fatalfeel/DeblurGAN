@@ -1,4 +1,7 @@
+import os
+import torch
 import argparse
+from util import util
 
 def str2bool(b_str):
 	if b_str.lower() in ('yes', 'true', 't', 'y', '1'):
@@ -49,3 +52,38 @@ class TestOptions():
         self.parser.add_argument('--which_epoch', type=str, default='latest', help='which epoch to load? set to latest to use latest cached model')
         self.parser.add_argument('--how_many', type=int, default=5000, help='how many test images to run')
         self.isTrain = False
+
+    def GetOption(self):
+        self.opt = self.parser.parse_args()
+        self.opt.isTrain = self.isTrain  # train or test
+
+        str_ids = self.opt.gpu_ids.split(',')
+        self.opt.gpu_ids = []
+        for str_id in str_ids:
+            id = int(str_id)
+            if id >= 0:
+                self.opt.gpu_ids.append(id)
+
+        # set gpu ids
+        if len(self.opt.gpu_ids) > 0:
+            torch.cuda.set_device(self.opt.gpu_ids[0])
+
+        args = vars(self.opt)
+
+        print('------------ Options -------------')
+        for k, v in sorted(args.items()):
+            print('%s: %s' % (str(k), str(v)))
+        print('-------------- End ----------------')
+
+        # save to the disk
+        # expr_dir = os.path.join(self.opt.checkpoints_dir, self.opt.name)
+        expr_dir = self.opt.checkpoints_dir
+        util.mkdirs(expr_dir)
+        file_name = os.path.join(expr_dir, 'opt.txt')
+        with open(file_name, 'wt') as opt_file:
+            opt_file.write('------------ Options -------------\n')
+            for k, v in sorted(args.items()):
+                opt_file.write('%s: %s\n' % (str(k), str(v)))
+            opt_file.write('-------------- End ----------------\n')
+
+        return self.opt

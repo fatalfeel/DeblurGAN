@@ -58,7 +58,7 @@ if __name__ == '__main__':
 	#opt.resize_or_crop = "crop"
 	#opt.fineSize = 256
 	#opt.gan_type = "gan"
-	opt = TrainOptions().get_parse()
+	opt = TrainOptions().GetOption()
 	opt.save_latest_freq	= 100
 	opt.print_freq 			= 20
 

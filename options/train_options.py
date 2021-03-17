@@ -65,7 +65,7 @@ class TrainOptions():
 
 		self.isTrain = True
 
-	def get_parse(self):
+	def GetOption(self):
 		self.opt = self.parser.parse_args()
 		self.opt.isTrain = self.isTrain   # train or test
 
@@ -97,4 +97,5 @@ class TrainOptions():
 			for k, v in sorted(args.items()):
 				opt_file.write('%s: %s\n' % (str(k), str(v)))
 			opt_file.write('-------------- End ----------------\n')
+
 		return self.opt

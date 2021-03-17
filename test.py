@@ -5,7 +5,7 @@ from models.model_select import create_model
 from util.visualizer import Visualizer
 from util import html
 
-opt 				= TestOptions().parse()
+opt 				= TestOptions().GetOption()
 opt.nThreads 		= 1   # test code only supports nThreads = 1
 opt.batchSize 		= 1  # test code only supports batchSize = 1
 opt.serial_batches 	= True  # no shuffle
@@ -18,7 +18,7 @@ visualizer 	= Visualizer(opt)
 # create website
 #web_dir = os.path.join(opt.results_dir, opt.name, '%s_%s' % (opt.phase, opt.which_epoch))
 #webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, opt.which_epoch))
-web_dir = os.path.join(opt.results_dir, '%s_%s' % (opt.phase, opt.which_epoch))
+web_dir = opt.results_dir
 webpage = html.HTML(web_dir, 'Experiment, Phase = %s, Epoch = %s' % (opt.phase, opt.which_epoch))
 # test
 avgPSNR = 0.0
