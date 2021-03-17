@@ -158,40 +158,40 @@ class Resnet_Generator(nn.Module):
         else:
             use_bias = norm_layer == nn.InstanceNorm2d
 
-        model = [nn.ReflectionPad2d(3),
-                 nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0, bias=use_bias),
-                 norm_layer(ngf),
-                 nn.ReLU(True)]
+        sequence = [nn.ReflectionPad2d(3),
+                    nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0, bias=use_bias),
+                    norm_layer(ngf),
+                    nn.ReLU(True)]
 
-        model += [nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1, bias=use_bias),
-                  norm_layer(128),
-                  nn.ReLU(True),
+        sequence += [nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1, bias=use_bias),
+                     norm_layer(128),
+                     nn.ReLU(True),
 
-                  nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1, bias=use_bias),
-                  norm_layer(256),
-                  nn.ReLU(True)]
+                     nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1, bias=use_bias),
+                     norm_layer(256),
+                     nn.ReLU(True)]
 
         # 中间的残差网络
         for i in range(n_blocks):
-            model += [ResnetBlock(256,
-                                  padding_type=padding_type,
-                                  norm_layer=norm_layer,
-                                  use_dropout=use_dropout,
-                                  use_bias=use_bias)]
+            sequence += [ResnetBlock(256,
+                                     padding_type=padding_type,
+                                     norm_layer=norm_layer,
+                                     use_dropout=use_dropout,
+                                     use_bias=use_bias)]
 
-        model += [  nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
-                    norm_layer(128),
-                    nn.ReLU(True),
+        sequence += [nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
+                     norm_layer(128),
+                     nn.ReLU(True),
 
-                    nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
-                    norm_layer(64),
-                    nn.ReLU(True)  ]
+                     nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
+                     norm_layer(64),
+                     nn.ReLU(True)]
 
-        model += [  nn.ReflectionPad2d(3),
-                    nn.Conv2d(64, output_nc, kernel_size=7, padding=0),
-                    nn.Tanh()  ]
+        sequence += [nn.ReflectionPad2d(3),
+                     nn.Conv2d(64, output_nc, kernel_size=7, padding=0),
+                     nn.Tanh()]
 
-        self.model = nn.Sequential(*model) #it's a deconvnet model
+        self.model = nn.Sequential(*sequence) #it's a deconvnet model
 
     def forward(self, input):
         if len(self.gpu_ids) > 0 and isinstance(input.data, torch.cuda.FloatTensor) and self.use_parallel:
