@@ -13,15 +13,15 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - bash -x ./install_data.sh
 
 ### Train
-#open step 1 terminal window
+- step 1 in terminal window
 - pip3 install visdom
 - python3 -m visdom.server
 
-#open step 2 terminal window
+- step 2 in terminal window
 - cd /root/PycharmProjects/DeblurGAN
 - python3 ./train.py --dataroot /root/PycharmProjects/DeblurGAN/data/combined --learn_residual True --resize_or_crop crop --fineSize 256
 
-- If you do not want to use visdom.server then
+- If you do not want to use visdom.server then skip step 1,2
 - python3 ./train.py --dataroot /root/PycharmProjects/DeblurGAN/data/combined --learn_residual True --resize_or_crop crop --fineSize 256 --display_id -1
 
 - If you want to use cpu to step debug and do not want to use visdom.server
