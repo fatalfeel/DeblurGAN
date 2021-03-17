@@ -31,5 +31,5 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
  
 ### Test
 - python3 ./test.py --dataroot /root/PycharmProjects/DeblurGAN/data/blurred --model test --dataset_mode single --learn_residual
-- or use cpu no cuda
+- or use cpu only
 - python3 ./test.py --dataroot /root/PycharmProjects/DeblurGAN/data/blurred --model test --dataset_mode single --learn_residual --gpu_ids -1
