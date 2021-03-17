@@ -122,8 +122,8 @@ class ConditionalGAN():
 
 	def forward(self):
 		self.real_A 	= Variable(self.input_A) 			#self.real_A is original blurred
-		#In dcgan fake_feture = netG(noise_images)
-		#The noise_image here is self.real_A(original blurred)
+		#In dcgan: fake_feture = netG(noise_images)
+		#The noise_image here is self.real_A original blurred
 		self.fake_B 	= self.netG.forward(self.real_A) 	#self.fake_B is fake blurred
 		self.real_B 	= Variable(self.input_B) 			#self.real_B is original sharp
 		'''nimga = self.NormalizeImg(self.real_A.detach().cpu())
@@ -145,7 +145,7 @@ class ConditionalGAN():
 
 	'''def backward_D(self):
 		#self.loss_D = self.discLoss.get_loss(self.netD, self.real_A, self.fake_B, self.real_B)
-		self.loss_D = self.discLoss.get_lossD(self.netD, self.real_B, self.fake_B)
+		self.loss_D = self.discLoss.get_lossD(self.netD, self.fake_B, self.real_B)
 		self.loss_D.backward(retain_graph=True)
 
 	def backward_G(self):
@@ -161,7 +161,7 @@ class ConditionalGAN():
 		#for iter_d in range(self.criticUpdates): #self.criticUpdates = 1 for gan
 		self.optimizer_D.zero_grad()
 		#self.backward_D()
-		self.loss_D = self.discLoss.get_lossD(self.netD, self.real_B, self.fake_B)
+		self.loss_D = self.discLoss.get_lossD(self.netD, self.fake_B, self.real_B)
 		self.loss_D.backward(retain_graph=True)
 		self.optimizer_D.step()
 

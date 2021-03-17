@@ -138,19 +138,19 @@ class DiscriminatorLoss:
 		return loss
 
 	#def get_loss(self, net, realA, fakeB, realB):
-	def get_lossD(self, module, realB, fakeB):
-		# Real
-		real_feature	= module.forward(realB)
-		#self.loss_D_real 	= self.loss_gan(self.pred_real, 1)
-		loss_D_real 	= self.LossFunction(real_feature, True)
-
+	def get_lossD(self, module, fakeB, realB):
 		# Fake
 		fake_feature 	= module.forward(fakeB.detach())
 		#self.loss_D_fake 	= self.loss_gan(self.pred_fake, target_is_real=0)
 		loss_D_fake 	= self.LossFunction(fake_feature, False)
 
+		# Real
+		real_feature	= module.forward(realB)
+		#self.loss_D_real 	= self.loss_gan(self.pred_real, 1)
+		loss_D_real 	= self.LossFunction(real_feature, True)
+
 		# Combined loss
-		loss 			= (loss_D_real + loss_D_fake) * 0.5
+		loss 			= (loss_D_fake + loss_D_real) * 0.5
 
 		return loss
 
