@@ -139,7 +139,7 @@ class Resnet_Generator(nn.Module):
                  ngf=64,
                  norm_layer=nn.BatchNorm2d,
                  use_dropout=False,
-                 n_blocks=6,
+                 n_blocks=9,
                  gpu_ids=[],
                  use_parallel=True,
                  learn_residual=False,
