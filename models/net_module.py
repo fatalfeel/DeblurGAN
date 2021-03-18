@@ -132,6 +132,7 @@ class ResnetBlock(nn.Module):
         out = x + self.conv_block(x)
         return out
 
+#ConvBlock + ResidualBlock + DeconvBlock
 class Resnet_Generator(nn.Module):
     def __init__(self,
                  input_nc,
