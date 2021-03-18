@@ -133,6 +133,7 @@ class ResnetBlock(nn.Module):
         return out
 
 #ConvBlock + ResidualBlock + DeconvBlock
+#https://github.com/rrmina/fast-neural-style-pytorch/blob/master/transformer.py
 class Resnet_Generator(nn.Module):
     def __init__(self,
                  input_nc,

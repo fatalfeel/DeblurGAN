@@ -5,11 +5,11 @@ from torch.autograd import Variable
 # Functions
 ###############################################################################
 '''class ContentLoss: #for pix2pix using
-	def __init__(self):
-		self.criterion 	= nn.L1Loss()
+    def __init__(self):
+        self.criterion 	= nn.L1Loss()
 			
-	def get_loss(self, fakeIm, realIm):
-		return self.criterion(fakeIm, realIm)'''
+    def get_loss(self, fakeIm, realIm):
+	    return self.criterion(fakeIm, realIm)'''
 
 class PerceptualLoss():
     #def __init__(self, opt, loss):
@@ -19,7 +19,8 @@ class PerceptualLoss():
         self.model		= self.GetModel()
 
     def GetModel(self):
-        vgg_net		= models.vgg19(pretrained=True).features
+        #vgg_net	= models.vgg19(pretrained=True).features
+        vgg_net 	= models.vgg16(pretrained=True).features
         sequence 	= nn.Sequential()
 
         #vgg_net 	= cnn.cuda()
@@ -28,7 +29,8 @@ class PerceptualLoss():
             vgg_net		= vgg_net.cuda()
             sequence	= sequence.cuda()
 
-        stop_layer = 14
+        #stop_layer = 14
+        stop_layer = 8	###layers = {'3': 'relu1_2', '8': 'relu2_2'}
         for i, layer in enumerate(list(vgg_net)):
             sequence.add_module(str(i), layer)
             if i == stop_layer:

@@ -152,7 +152,7 @@ class ConditionalGAN():
 	def backward_G(self):
 		self.lossG		= self.discLoss.get_lossG(self.netD, self.fake_B)
 		#self.lossC is vgg19(fake blurred) and vgg19(original sharp) do mseloss
-		self.lossC 		= self.contentLoss.get_loss(self.fake_B, self.real_B) * self.opt.lambda_A
+		self.lossC 		= self.contentLoss.get_loss(self.fake_B, self.real_B) * self.opt.content_weight
 		self.loss_GC 	= self.lossG + self.lossC
 		self.loss_GC.backward()'''
 
@@ -169,7 +169,7 @@ class ConditionalGAN():
 		self.optimizer_G.zero_grad()
 		#self.backward_G()
 		self.lossG = self.discLoss.get_lossG(self.netD, self.fake_B)
-		self.lossC = self.contentLoss.get_loss(self.fake_B, self.real_B) * self.opt.lambda_A
+		self.lossC = self.contentLoss.get_loss(self.fake_B, self.real_B) * self.opt.content_weight
 		self.loss_GC = self.lossG + self.lossC
 		self.loss_GC.backward()
 		self.optimizer_G.step()
