@@ -1,4 +1,4 @@
-﻿import torch.nn as nn
+import torch.nn as nn
 import torchvision.models as models
 from torch.autograd import Variable
 ###############################################################################
@@ -28,10 +28,10 @@ class PerceptualLoss():
             vgg_net		= vgg_net.cuda()
             sequence	= sequence.cuda()
 
-        conv_3_3_layer = 14
+        stop_layer = 14
         for i, layer in enumerate(list(vgg_net)):
             sequence.add_module(str(i), layer)
-            if i == conv_3_3_layer:
+            if i == stop_layer:
                 break
 
         return sequence
