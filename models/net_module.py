@@ -169,25 +169,17 @@ class Resnet_Generator(nn.Module):
 
                      nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1, bias=use_bias),
                      norm_layer(256),
-                     nn.ReLU(True),
-
-                     nn.Conv2d(256, 512, kernel_size=3, stride=2, padding=1, bias=use_bias),
-                     norm_layer(512),
                      nn.ReLU(True)]
 
         # 中间的残差网络
         for i in range(n_blocks):
-            sequence += [ResnetBlock(512,
+            sequence += [ResnetBlock(256,
                                      padding_type=padding_type,
                                      norm_layer=norm_layer,
                                      use_dropout=use_dropout,
                                      use_bias=use_bias)]
 
-        sequence += [nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
-                     norm_layer(256),
-                     nn.ReLU(True),
-
-                     nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
+        sequence += [nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
                      norm_layer(128),
                      nn.ReLU(True),
 
