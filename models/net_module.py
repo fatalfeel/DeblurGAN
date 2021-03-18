@@ -38,7 +38,7 @@ class NLayer_Discriminator(nn.Module):
                  input_nc,
                  ndf=64,
                  n_layers=3,
-                 norm_layer=nn.BatchNorm2d,
+                 norm_layer=nn.InstanceNorm2d,
                  use_sigmoid=False,
                  gpu_ids=[],
                  use_parallel=True):
@@ -137,7 +137,7 @@ class Resnet_Generator(nn.Module):
                  input_nc,
                  output_nc,
                  ngf=64,
-                 norm_layer=nn.BatchNorm2d,
+                 norm_layer=nn.InstanceNorm2d,
                  use_dropout=False,
                  n_blocks=9,
                  gpu_ids=[],
@@ -169,17 +169,25 @@ class Resnet_Generator(nn.Module):
 
                      nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1, bias=use_bias),
                      norm_layer(256),
+                     nn.ReLU(True),
+
+                     nn.Conv2d(256, 512, kernel_size=3, stride=2, padding=1, bias=use_bias),
+                     norm_layer(512),
                      nn.ReLU(True)]
 
         # 中间的残差网络
         for i in range(n_blocks):
-            sequence += [ResnetBlock(256,
+            sequence += [ResnetBlock(512,
                                      padding_type=padding_type,
                                      norm_layer=norm_layer,
                                      use_dropout=use_dropout,
                                      use_bias=use_bias)]
 
-        sequence += [nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
+        sequence += [nn.ConvTranspose2d(512, 256, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
+                     norm_layer(256),
+                     nn.ReLU(True),
+
+                     nn.ConvTranspose2d(256, 128, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
                      norm_layer(128),
                      nn.ReLU(True),
 
@@ -210,7 +218,7 @@ class Resnet_Generator(nn.Module):
                  output_nc,
                  num_downs,
                  ngf=64,
-                 norm_layer=nn.BatchNorm2d,
+                 norm_layer=nn.InstanceNorm2d,
                  use_dropout=False,
                  gpu_ids=[],
                  use_parallel=False,
@@ -261,7 +269,7 @@ class UnetSkipConnectionBlock(nn.Module):
                  submodule=None,
                  outermost=False,
                  innermost=False,
-                 norm_layer=nn.BatchNorm2d,
+                 norm_layer=nn.InstanceNorm2d,
                  use_dropout=False):
         super(UnetSkipConnectionBlock, self).__init__()
         self.outermost = outermost

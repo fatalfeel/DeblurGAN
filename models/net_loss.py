@@ -28,7 +28,7 @@ class PerceptualLoss():
             vgg_model	= vgg_model.cuda()
             vgg_seq		= vgg_seq.cuda()
 
-        conv_3_3_layer = 14
+        conv_3_3_layer = 26
         for i, layer in enumerate(list(vgg_model)):
             vgg_seq.add_module(str(i), layer)
             if i == conv_3_3_layer:
