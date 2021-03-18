@@ -16,32 +16,32 @@ class PerceptualLoss():
     def __init__(self, opt):
         self.opt		= opt
         self.loss_mse	= nn.MSELoss()
-        self.contentSeq	= self.GetVggSeq()
+        self.model		= self.GetModel()
 
-    #def contentFunc(self):
-    def GetVggSeq(self):
-        vgg_model		= models.vgg19(pretrained=True).features
-        vgg_seq 		= nn.Sequential()
-        #cnn 	= cnn.cuda()
-        #vgg_net= vgg_net.cuda()
+    def GetModel(self):
+        vgg_net		= models.vgg19(pretrained=True).features
+        sequence 	= nn.Sequential()
+
+        #vgg_net 	= cnn.cuda()
+        #sequence	= sequence.cuda()
         if len(self.opt.gpu_ids) > 0:
-            vgg_model	= vgg_model.cuda()
-            vgg_seq		= vgg_seq.cuda()
+            vgg_net		= vgg_net.cuda()
+            sequence	= sequence.cuda()
 
         conv_3_3_layer = 14
-        for i, layer in enumerate(list(vgg_model)):
-            vgg_seq.add_module(str(i), layer)
+        for i, layer in enumerate(list(vgg_net)):
+            sequence.add_module(str(i), layer)
             if i == conv_3_3_layer:
                 break
 
-        return vgg_seq
+        return sequence
 
     def get_loss(self, fake_B, real_B):
         #f_fake = self.contentFunc.forward(fakeIm)
-        f_fake 			= self.contentSeq.forward(fake_B)
+        f_fake 			= self.model.forward(fake_B)
 
         #f_real = self.contentFunc.forward(realIm)
-        f_real 			= self.contentSeq.forward(real_B)
+        f_real 			= self.model.forward(real_B)
         #f_real_no_grad = f_real.detach()
 
         #loss 			= self.loss_mse(f_fake, f_real_no_grad)

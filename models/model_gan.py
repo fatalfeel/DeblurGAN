@@ -84,7 +84,7 @@ class ConditionalGAN():
 		print_network(self.netG)
 		if self.isTrain:
 			print_network(self.netD)
-			print_network(self.contentLoss.contentSeq)
+			print_network(self.contentLoss.model)
 		print('-----------------------------------------------')
 
 	def NormalizeImg(self, img):
