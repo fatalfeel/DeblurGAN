@@ -2,6 +2,7 @@
 
 sudo apt install unzip
 sudo pip3 install --force-reinstall gdown
+
 gdown https://drive.google.com/u/0/uc?id=1CPMBmRj-jBDO2ax4CxkBs9iczIFrs8VA
 
 mkdir -p ./data/blurred/train
