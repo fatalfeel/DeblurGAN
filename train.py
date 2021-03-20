@@ -58,11 +58,11 @@ if __name__ == '__main__':
 	#opt.resize_or_crop = "crop"
 	#opt.fineSize = 256
 	#opt.gan_type = "gan"
-	opt = TrainOptions().GetOption()
-	opt.save_latest_freq	= 100
-	opt.print_freq 			= 20
+    opt 					= TrainOptions().GetOption()
+    opt.save_latest_freq	= 100
+    opt.print_freq			= 20
 
-	data_loader = CreateDataLoader(opt)
-	model		= create_model(opt)
-	visualizer 	= Visualizer(opt)
-	train(opt, data_loader, model, visualizer)
+    data_loader 			= CreateDataLoader(opt)
+    model					= create_model(opt)
+    visualizer 				= Visualizer(opt)
+    train(opt, data_loader, model, visualizer)
