@@ -50,14 +50,14 @@ def train(opt, data_loader, model, visualizer):
 
 
 if __name__ == '__main__':
-	#freeze_support()
+    #freeze_support()
 
-	#python train.py --dataroot /.path_to_your_data --learn_residual --resize_or_crop crop --fineSize CROP_SIZE (we used 256)
-	#opt.dataroot = '/root/PycharmProjects/DeblurGAN/data/combined'
-	#opt.learn_residual = True
-	#opt.resize_or_crop = "crop"
-	#opt.fineSize = 256
-	#opt.gan_type = "gan"
+    #python train.py --dataroot /.path_to_your_data --learn_residual --resize_or_crop crop --fineSize CROP_SIZE (we used 256)
+    #opt.dataroot = '/root/PycharmProjects/DeblurGAN/data/combined'
+    #opt.learn_residual = True
+    #opt.resize_or_crop = "crop"
+    #opt.fineSize = 256
+    #opt.gan_type = "gan"
     opt 					= TrainOptions().GetOption()
     opt.save_latest_freq	= 100
     opt.print_freq			= 20
