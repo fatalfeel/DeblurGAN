@@ -310,7 +310,7 @@ def define_D(input_nc,
              use_sigmoid=False,
              gpu_ids=[],
              use_parallel=False):
-    netD        = None
+    #netD        = None
     use_gpu     = len(gpu_ids) > 0
     norm_layer  = get_norm_layer(norm_type=norm)
 
