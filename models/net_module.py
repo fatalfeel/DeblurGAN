@@ -29,9 +29,6 @@ def print_network(net):
     print(net)
     print('Total number of parameters: %d' % num_params)
 
-##############################################################################
-# Classes
-##############################################################################
 # Defines the PatchGAN discriminator with the specified arguments.
 class NLayer_Discriminator(nn.Module):
     def __init__(self,
@@ -95,8 +92,6 @@ class NLayer_Discriminator(nn.Module):
         else:
             return self.model(input)
 
-# Defines the generator that consists of Resnet blocks between a few
-# downsampling/upsampling operations.
 # Code and idea originally from Justin Johnson's architecture.
 # https://github.com/jcjohnson/fast-neural-style/
 ###############################################################################
@@ -309,7 +304,7 @@ class UnetSkipConnectionBlock(nn.Module):
 ###############################################################################
 def define_D(input_nc,
              ndf,
-             which_model_netD,
+             #which_model_netD,
              n_layers_D=3,
              norm='batch',
              use_sigmoid=False,
@@ -322,26 +317,33 @@ def define_D(input_nc,
     if use_gpu:
         assert (torch.cuda.is_available())
 
-    if which_model_netD == 'basic':
+    '''if which_model_netD == 'basic':
         netD = NLayer_Discriminator(input_nc,
                                    ndf,
-                                   #n_layers=3,
-                                   n_layers     = n_layers_D,
+                                   n_layers     = 3,
                                    norm_layer   = norm_layer,
                                    use_sigmoid  = use_sigmoid,
                                    gpu_ids      = gpu_ids,
                                    use_parallel = use_parallel)
 
-    '''elif which_model_netD == 'n_layers':
+    elif which_model_netD == 'n_layers':
         netD = NLayer_Discriminator(input_nc,
                                    ndf,
-                                   n_layers_D,
-                                   norm_layer=norm_layer,
-                                   use_sigmoid=use_sigmoid,
-                                   gpu_ids=gpu_ids,
-                                   use_parallel=use_parallel)
+                                   n_layers     = n_layers_D,
+                                   norm_layer   = norm_layer,
+                                   use_sigmoid  = use_sigmoid,
+                                   gpu_ids      = gpu_ids,
+                                   use_parallel = use_parallel)
     else:
         raise NotImplementedError('Discriminator model name [%s] is not recognized' % which_model_netD)'''
+
+    netD = NLayer_Discriminator(input_nc,
+                                ndf,
+                                n_layers=n_layers_D,
+                                norm_layer=norm_layer,
+                                use_sigmoid=use_sigmoid,
+                                gpu_ids=gpu_ids,
+                                use_parallel=use_parallel)
 
     if use_gpu:
         netD.cuda(gpu_ids[0])
@@ -352,20 +354,21 @@ def define_D(input_nc,
 def define_G(input_nc,
              output_nc,
              ngf,
-             which_model_netG,
+             #which_model_netG,
+             n_layers_G,
              norm='batch',
              use_dropout=False,
              gpu_ids=[],
              use_parallel=False,
              learn_residual=False):
-    netG        = None
+    #netG        = None
     use_gpu     = len(gpu_ids) > 0
     norm_layer  = get_norm_layer(norm_type=norm)
 
     if use_gpu:
         assert (torch.cuda.is_available())
 
-    if which_model_netG == 'resnet_9blocks':
+    '''if which_model_netG == 'resnet_9blocks':
         netG = Resnet_Generator(input_nc,
                                output_nc,
                                ngf,
@@ -385,8 +388,7 @@ def define_G(input_nc,
                                gpu_ids=gpu_ids,
                                use_parallel=use_parallel,
                                learn_residual=learn_residual)
-
-    '''elif which_model_netG == 'unet_128':
+    elif which_model_netG == 'unet_128':
         netG = UnetGenerator(input_nc,
                              output_nc,
                              7,
@@ -408,6 +410,16 @@ def define_G(input_nc,
                              learn_residual=learn_residual)
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % which_model_netG)'''
+
+    netG = Resnet_Generator(input_nc,
+                            output_nc,
+                            ngf,
+                            norm_layer      = norm_layer,
+                            use_dropout     = use_dropout,
+                            n_blocks        = n_layers_G,
+                            gpu_ids         = gpu_ids,
+                            use_parallel    = use_parallel,
+                            learn_residual  = learn_residual)
 
     if len(gpu_ids) > 0:
         netG.cuda(gpu_ids[0])

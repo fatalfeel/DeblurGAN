@@ -20,7 +20,6 @@ class ConditionalGAN():
 		self.isTrain 	= opt.isTrain
 		self.Tensor 	= torch.cuda.FloatTensor if len(self.gpu_ids) > 0 else torch.Tensor
 		self.save_dir 	= opt.checkpoints_dir
-		self.isTrain 	= opt.isTrain
 
 		# define tensors
 		self.input_A 	= self.Tensor(opt.batchSize, opt.input_nc,  opt.fineSize, opt.fineSize)
@@ -42,30 +41,36 @@ class ConditionalGAN():
 
 		use_parallel = False
 		print("Use Parallel = ", "True" if use_parallel else "False")
-		self.netG = define_G(	opt.input_nc,
-								opt.output_nc,
-								opt.ngf,
-								opt.which_model_netG,
-								opt.norm,
-								not opt.no_dropout,
-								self.gpu_ids,
-								use_parallel,
-								opt.learn_residual	)
+
 		if self.isTrain:
-			use_sigmoid = opt.gan_type == 'gan'
+			use_sigmoid = (opt.gan_type == 'gan')
 			self.netD = define_D(	opt.output_nc,
 									opt.ndf,
-									opt.which_model_netD,
+									#opt.which_model_netD,
 									opt.n_layers_D,
 									opt.norm,
 									use_sigmoid,
 									self.gpu_ids,
 									use_parallel	)
 
-		if not self.isTrain or opt.continue_train:
+		self.netG = define_G(	opt.input_nc,
+								opt.output_nc,
+								opt.ngf,
+								#opt.which_model_netG,
+								opt.n_layers_G,
+								opt.norm,
+								not opt.no_dropout,
+								self.gpu_ids,
+								use_parallel,
+								opt.learn_residual	)
+
+		'''if not self.isTrain or opt.continue_train:
 			self.load_network(self.netG, 'G', opt.which_epoch)
 			if self.isTrain:
-				self.load_network(self.netD, 'D', opt.which_epoch)
+				self.load_network(self.netD, 'D', opt.which_epoch)'''
+		if opt.continue_train:
+			self.load_network(self.netD, 'D', opt.which_epoch)
+			self.load_network(self.netG, 'G', opt.which_epoch)
 
 		if self.isTrain:
 			#self.fake_AB_pool = ImagePool(opt.pool_size)

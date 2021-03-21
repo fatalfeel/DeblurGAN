@@ -4,10 +4,10 @@ import argparse
 from util import util
 
 def str2bool(b_str):
-	if b_str.lower() in ('yes', 'true', 't', 'y', '1'):
-		return True
-	elif b_str.lower() in ('no', 'false', 'f', 'n', '0'):
-		return False
+    if b_str.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif b_str.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
 
 class TestOptions():
     def __init__(self):
@@ -22,11 +22,12 @@ class TestOptions():
         self.parser.add_argument('--output_nc', type=int, default=3, help='# of output image channels')
         self.parser.add_argument('--ngf', type=int, default=64, help='# of gen filters in first conv layer')
         self.parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in first conv layer')
-        self.parser.add_argument('--which_model_netD', type=str, default='basic', help='selects model to use for netD')
-        self.parser.add_argument('--which_model_netG', type=str, default='resnet_9blocks', help='resnet or unet for netG')
+        #self.parser.add_argument('--which_model_netD', type=str, default='basic', help='selects model to use for netD')
+        #self.parser.add_argument('--which_model_netG', type=str, default='resnet_9blocks', help='resnet or unet for netG')
         self.parser.add_argument('--learn_residual', type=str2bool, default=True, help='if specified, model would learn only the residual to the input')
         self.parser.add_argument('--gan_type', type=str, default='gan', help='gan : Vanilla GAN, wgan-gp : Wasserstein GAN with Gradient Penalty, lsgan : Least Sqaures GAN')
         self.parser.add_argument('--n_layers_D', type=int, default=3, help='only used if which_model_netD==n_layers')
+        self.parser.add_argument('--n_layers_G', type=int, default=9, help='only used if which_model_netG==n_layers')
         self.parser.add_argument('--gpu_ids', type=str, default='0', help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
         #self.parser.add_argument('--name', type=str, default='experiment_name', help='name of the experiment. It decides where to store samples and models')
         self.parser.add_argument('--dataset_mode', type=str, default='aligned', help='chooses how datasets are loaded. [unaligned | aligned | single]')
@@ -51,11 +52,12 @@ class TestOptions():
         self.parser.add_argument('--phase', type=str, default='test', help='train, val, test, etc')
         self.parser.add_argument('--which_epoch', type=str, default='latest', help='which epoch to load? set to latest to use latest cached model')
         self.parser.add_argument('--how_many', type=int, default=5000, help='how many test images to run')
+
         self.isTrain = False
 
     def GetOption(self):
         self.opt = self.parser.parse_args()
-        self.opt.isTrain = self.isTrain  # train or test
+        self.opt.isTrain = self.isTrain	#train or test
 
         str_ids = self.opt.gpu_ids.split(',')
         self.opt.gpu_ids = []
@@ -76,7 +78,7 @@ class TestOptions():
         print('-------------- End ----------------')
 
         # save to the disk
-        # expr_dir = os.path.join(self.opt.checkpoints_dir, self.opt.name)
+        #expr_dir = os.path.join(self.opt.checkpoints_dir, self.opt.name)
         expr_dir = self.opt.checkpoints_dir
         util.mkdirs(expr_dir)
         file_name = os.path.join(expr_dir, 'opt.txt')
