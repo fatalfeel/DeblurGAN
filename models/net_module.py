@@ -349,6 +349,7 @@ def define_D(input_nc,
         netD.cuda(gpu_ids[0])
 
     netD.apply(weights_init)
+
     return netD
 
 def define_G(input_nc,
