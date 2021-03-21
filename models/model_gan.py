@@ -58,6 +58,7 @@ class ConditionalGAN():
 								opt.ngf,
 								#opt.which_model_netG,
 								opt.n_layers_G,
+								opt.n_blocks_G,
 								opt.norm,
 								not opt.no_dropout,
 								self.gpu_ids,

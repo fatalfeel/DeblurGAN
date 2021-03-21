@@ -133,13 +133,14 @@ class Resnet_Generator(nn.Module):
     def __init__(self,
                  input_nc,
                  output_nc,
-                 ngf=64,
-                 norm_layer=nn.InstanceNorm2d,
-                 use_dropout=False,
-                 n_blocks=9,
-                 gpu_ids=[],
-                 use_parallel=True,
-                 learn_residual=False,
+                 ngf            = 64,
+                 norm_layer     = nn.InstanceNorm2d,
+                 use_dropout    = False,
+                 n_layers       = 2,
+                 n_blocks       = 9,
+                 gpu_ids        = [],
+                 use_parallel   = True,
+                 learn_residual = False,
                  padding_type='reflect'):
         assert (n_blocks >= 0)
         super(Resnet_Generator, self).__init__()
@@ -160,7 +161,7 @@ class Resnet_Generator(nn.Module):
                     norm_layer(ngf),
                     nn.ReLU(True)]
 
-        sequence += [nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1, bias=use_bias),
+        '''sequence += [nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1, bias=use_bias),
                      norm_layer(128),
                      nn.ReLU(True),
 
@@ -168,7 +169,6 @@ class Resnet_Generator(nn.Module):
                      norm_layer(256),
                      nn.ReLU(True)]
 
-        # 中间的残差网络
         for i in range(n_blocks):
             sequence += [ResnetBlock(256,
                                      padding_type=padding_type,
@@ -182,7 +182,30 @@ class Resnet_Generator(nn.Module):
 
                      nn.ConvTranspose2d(128, 64, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
                      norm_layer(64),
-                     nn.ReLU(True)]
+                     nn.ReLU(True)]'''
+
+        mult_prev = 1
+        mult_curr = 1
+        for n in range(1, n_layers + 1):
+            mult_prev = mult_curr
+            mult_curr = 2 ** n
+            sequence += [nn.Conv2d(ngf * mult_prev, ngf * mult_curr, kernel_size=3, stride=2, padding=1, bias=use_bias),
+                         norm_layer(ngf * mult_curr),
+                         nn.ReLU(True)]
+
+        for i in range(n_blocks):
+            sequence += [ResnetBlock(ngf * mult_curr,
+                                     padding_type=padding_type,
+                                     norm_layer=norm_layer,
+                                     use_dropout=use_dropout,
+                                     use_bias=use_bias)]
+
+        for n in range(n_layers, 0, -1):
+            mult_prev = mult_curr
+            mult_curr = 2 ** (n - 1)
+            sequence += [nn.ConvTranspose2d(ngf * mult_prev, ngf * mult_curr, kernel_size=3, stride=2, padding=1, output_padding=1, bias=use_bias),
+                         norm_layer(ngf * mult_curr),
+                         nn.ReLU(True)]
 
         sequence += [nn.ReflectionPad2d(3),
                      nn.Conv2d(64, output_nc, kernel_size=7, padding=0),
@@ -357,6 +380,7 @@ def define_G(input_nc,
              ngf,
              #which_model_netG,
              n_layers_G,
+             n_blocks_G,
              norm='batch',
              use_dropout=False,
              gpu_ids=[],
@@ -417,7 +441,8 @@ def define_G(input_nc,
                             ngf,
                             norm_layer      = norm_layer,
                             use_dropout     = use_dropout,
-                            n_blocks        = n_layers_G,
+                            n_layers        = n_layers_G,
+                            n_blocks        = n_blocks_G,
                             gpu_ids         = gpu_ids,
                             use_parallel    = use_parallel,
                             learn_residual  = learn_residual)
