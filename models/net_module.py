@@ -53,8 +53,8 @@ class NLayer_Discriminator(nn.Module):
         sequence = [nn.Conv2d(input_nc, ndf, kernel_size=kw, stride=2, padding=padw),
                     nn.LeakyReLU(0.2, True)]
 
-        nf_mult         = 1
         nf_mult_prev    = 1
+        nf_mult         = 1
         for n in range(1, n_layers):
             nf_mult_prev = nf_mult
             nf_mult = min(2 ** n, 8)
