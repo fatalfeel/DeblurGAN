@@ -141,7 +141,7 @@ class Resnet_Generator(nn.Module):
                  gpu_ids        = [],
                  use_parallel   = True,
                  learn_residual = False,
-                 padding_type='reflect'):
+                 padding_type   ='reflect'):
         assert (n_blocks >= 0)
         super(Resnet_Generator, self).__init__()
         self.input_nc       = input_nc
