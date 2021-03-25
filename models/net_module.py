@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import functools
 import numpy as np
+from models.fpn_resnet import FPN_RESNET
 
 def weights_init(m):
     classname = m.__class__.__name__
@@ -384,7 +385,7 @@ def define_D(input_nc,
 def define_G(input_nc,
              output_nc,
              ngf,
-             #which_model_netG,
+             which_model_netG,
              n_layers_G,
              n_blocks_G,
              norm='batch',
@@ -442,16 +443,19 @@ def define_G(input_nc,
     else:
         raise NotImplementedError('Generator model name [%s] is not recognized' % which_model_netG)'''
 
-    netG = Resnet_Generator(input_nc,
-                            output_nc,
-                            ngf,
-                            norm_layer      = norm_layer,
-                            use_dropout     = use_dropout,
-                            n_layers        = n_layers_G,
-                            n_blocks        = n_blocks_G,
-                            gpu_ids         = gpu_ids,
-                            use_parallel    = use_parallel,
-                            learn_residual  = learn_residual)
+    if which_model_netG.find('FPN') >= 0:
+        netG = FPN_RESNET(which_model_netG)
+    else:
+        netG = Resnet_Generator(input_nc,
+                                output_nc,
+                                ngf,
+                                norm_layer      = norm_layer,
+                                use_dropout     = use_dropout,
+                                n_layers        = n_layers_G,
+                                n_blocks        = n_blocks_G,
+                                gpu_ids         = gpu_ids,
+                                use_parallel    = use_parallel,
+                                learn_residual  = learn_residual)
 
     if len(gpu_ids) > 0:
         netG.cuda(gpu_ids[0])

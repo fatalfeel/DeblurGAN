@@ -24,7 +24,7 @@ class TestModel():
         self.netG       = define_G( opt.input_nc,
                                     opt.output_nc,
                                     opt.ngf,
-                                    #opt.which_model_netG,
+                                    opt.which_model_netG,
                                     opt.n_layers_G,
                                     opt.n_blocks_G,
                                     opt.norm,
