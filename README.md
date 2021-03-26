@@ -28,7 +28,10 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 
 - If you want to use cpu to step debug and do not want to use visdom.server
 - python3 ./train.py --dataroot /root/PycharmProjects/DeblurGAN/data/combined --learn_residual True --resize_or_crop crop --fineSize 256 --gpu_ids -1 --display_id -1
- 
+
+- The netG can generate deblurring image default using FPN152(the best quality) can change to ResNet or FPN101 to down weight size
+- python3 ./train.py --dataroot /root/PycharmProjects/DeblurGAN/data/combined --learn_residual True --resize_or_crop crop --fineSize 256 --gpu_ids -1 --display_id -1 --which_model_netG RESNET
+
 ### Test
 - python3 ./test.py --dataroot /root/PycharmProjects/DeblurGAN/data/blurred --model test --dataset_mode single --learn_residual
 - or use cpu only
