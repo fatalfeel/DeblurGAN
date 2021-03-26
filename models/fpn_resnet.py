@@ -70,11 +70,11 @@ class FPN(nn.Module):
         self.latlayer1  = nn.Conv2d(64,      num_filters // 2,   kernel_size=1, bias=False)
 
         # Smooth layers
-        '''self.smooth3    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
-        self.smooth2    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
-        self.smooth1    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
+        #self.smooth3    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
+        #self.smooth2    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
+        #self.smooth1    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
 
-        self.smooth3    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
+        '''self.smooth3    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
                                         nn.InstanceNorm2d(num_filters),
                                         nn.ReLU(inplace=True))
 
@@ -136,11 +136,7 @@ class FPN(nn.Module):
         lateral2    = self.latlayer2(c2)
         lateral1    = self.latlayer1(c1)
 
-        # upsample = interpolate
-        '''p4 = self.smooth3(self._upsample_add(p5, lateral4))
-        p3 = self.smooth2(self._upsample_add(p4, lateral3))
-        p2 = self.smooth1(self._upsample_add(p3, lateral2))'''
-
+        #If use self.smooth(=self.td), sometimes there will be broken pieces of picture
         '''p4 = self.smooth3(tnf.interpolate(p5, scale_factor=2, mode="nearest") + lateral4)
         p3 = self.smooth2(tnf.interpolate(p4, scale_factor=2, mode="nearest") + lateral3)
         p2 = self.smooth1(tnf.interpolate(p3, scale_factor=2, mode="nearest") + lateral2)'''
