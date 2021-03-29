@@ -187,11 +187,11 @@ class FPN_RESNET(nn.Module):
         self.head4  = FPNHead(num_filters_fpn, num_filters, num_filters)
 
         self.smooth2 = nn.Sequential(nn.Conv2d(4 * num_filters, num_filters, kernel_size=3, padding=1),
-                                     nn.BatchNorm2d(num_filters),
+                                     nn.InstanceNorm2d(num_filters),
                                      nn.ReLU())
 
         self.smooth1 = nn.Sequential(nn.Conv2d(num_filters, num_filters // 2, kernel_size=3, padding=1),
-                                     nn.BatchNorm2d(num_filters // 2),
+                                     nn.InstanceNorm2d(num_filters // 2),
                                      nn.ReLU())
 
         self.final = nn.Conv2d(num_filters // 2, output_ch, kernel_size=3, padding=1)
