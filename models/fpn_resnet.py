@@ -9,16 +9,19 @@ class ResnetBackbone(nn.Module):
         super(ResnetBackbone, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
+        
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(planes)
-        self.conv3 = nn.Conv2d(planes, self.expansion*planes, kernel_size=1, bias=False)
-        self.bn3 = nn.BatchNorm2d(self.expansion*planes)
+        
+        self.conv3 = nn.Conv2d(planes, planes*self.expansion, kernel_size=1, bias=False)
+        self.bn3 = nn.BatchNorm2d(planes*self.expansion)
+        
         self.relu = nn.ReLU(inplace=True)
 
         self.downsample = None
-        if stride != 1 or in_planes != self.expansion*planes:
-            self.downsample = nn.Sequential(nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
-                                            nn.BatchNorm2d(self.expansion*planes))
+        if stride != 1 or in_planes != planes*self.expansion:
+            self.downsample = nn.Sequential(nn.Conv2d(in_planes, planes*self.expansion, kernel_size=1, stride=stride, bias=False),
+                                            nn.BatchNorm2d(planes*self.expansion))
     def forward(self, data):
         #residual = data
         out = self.conv1(data)
