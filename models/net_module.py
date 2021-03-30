@@ -336,7 +336,7 @@ def define_D(input_nc,
              ndf,
              #which_model_netD,
              n_layers_D=3,
-             norm='batch',
+             norm='instance',
              use_sigmoid=False,
              gpu_ids=[],
              use_parallel=False):
