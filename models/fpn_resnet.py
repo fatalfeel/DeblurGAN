@@ -82,7 +82,7 @@ class FPN(nn.Module):
         #self.smooth2    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
         #self.smooth1    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
 
-        '''self.smooth3    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
+        self.smooth3    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
                                         nn.InstanceNorm2d(num_filters),
                                         nn.ReLU(inplace=True))
 
@@ -92,7 +92,7 @@ class FPN(nn.Module):
 
         self.smooth1    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
                                         nn.InstanceNorm2d(num_filters),
-                                        nn.ReLU(inplace=True))'''
+                                        nn.ReLU(inplace=True))
 
     def _make_layer(self, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
@@ -144,14 +144,9 @@ class FPN(nn.Module):
         lateral2    = self.latlayer2(c2)
         lateral1    = self.latlayer1(c1)
 
-        #If use self.smooth(=self.td), sometimes there will be broken pieces of picture
-        '''p4 = self.smooth3(tnf.interpolate(p5, scale_factor=2, mode="nearest") + lateral4)
+        p4 = self.smooth3(tnf.interpolate(p5, scale_factor=2, mode="nearest") + lateral4)
         p3 = self.smooth2(tnf.interpolate(p4, scale_factor=2, mode="nearest") + lateral3)
-        p2 = self.smooth1(tnf.interpolate(p3, scale_factor=2, mode="nearest") + lateral2)'''
-
-        p4 = tnf.interpolate(p5, scale_factor=2, mode="nearest") + lateral4
-        p3 = tnf.interpolate(p4, scale_factor=2, mode="nearest") + lateral3
-        p2 = tnf.interpolate(p3, scale_factor=2, mode="nearest") + lateral2
+        p2 = self.smooth1(tnf.interpolate(p3, scale_factor=2, mode="nearest") + lateral2)
 
         return lateral1, p2, p3, p4, p5
 
