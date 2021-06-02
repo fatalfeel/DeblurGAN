@@ -78,9 +78,9 @@ class FPN(nn.Module):
         self.latlayer1  = nn.Conv2d(64,      num_filters // 2,   kernel_size=1, bias=False)
 
         # Smooth layers
-        #self.smooth3    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
-        #self.smooth2    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
         #self.smooth1    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
+        #self.smooth2    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
+        #self.smooth3    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
 
         #reduce the aliasing effect of upsampling.
         self.smooth1    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
