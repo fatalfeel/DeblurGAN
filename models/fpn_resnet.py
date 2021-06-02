@@ -82,7 +82,8 @@ class FPN(nn.Module):
         #self.smooth2    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
         #self.smooth1    = nn.Conv2d(num_filters, num_filters, kernel_size=3, stride=1, padding=1)
 
-        self.smooth3    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
+        #reduce the aliasing effect of upsampling.
+        self.smooth1    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
                                         nn.InstanceNorm2d(num_filters),
                                         nn.ReLU(inplace=True))
 
@@ -90,7 +91,7 @@ class FPN(nn.Module):
                                         nn.InstanceNorm2d(num_filters),
                                         nn.ReLU(inplace=True))
 
-        self.smooth1    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
+        self.smooth3    = nn.Sequential(nn.Conv2d(num_filters, num_filters, kernel_size=3, padding=1),
                                         nn.InstanceNorm2d(num_filters),
                                         nn.ReLU(inplace=True))
 
@@ -134,9 +135,9 @@ class FPN(nn.Module):
         p2 = self._upsample_add(p3, lateral1)
 
         # Smooth
-        p4 = self.smooth3(p4)
+        p4 = self.smooth1(p4)
         p3 = self.smooth2(p3)
-        p2 = self.smooth1(p2)'''
+        p2 = self.smooth3(p2)'''
 
         p5          = self.latlayer5(c5)
         lateral4    = self.latlayer4(c4)
@@ -144,9 +145,9 @@ class FPN(nn.Module):
         lateral2    = self.latlayer2(c2)
         lateral1    = self.latlayer1(c1)
 
-        p4 = self.smooth3(tnf.interpolate(p5, scale_factor=2, mode="nearest") + lateral4)
+        p4 = self.smooth1(tnf.interpolate(p5, scale_factor=2, mode="nearest") + lateral4)
         p3 = self.smooth2(tnf.interpolate(p4, scale_factor=2, mode="nearest") + lateral3)
-        p2 = self.smooth1(tnf.interpolate(p3, scale_factor=2, mode="nearest") + lateral2)
+        p2 = self.smooth3(tnf.interpolate(p3, scale_factor=2, mode="nearest") + lateral2)
 
         return lateral1, p2, p3, p4, p5
 
@@ -181,11 +182,11 @@ class FPN_RESNET(nn.Module):
         self.head3  = FPNHead(num_filters_fpn, num_filters, num_filters)
         self.head4  = FPNHead(num_filters_fpn, num_filters, num_filters)
 
-        self.smooth2 = nn.Sequential(nn.Conv2d(4 * num_filters, num_filters, kernel_size=3, padding=1),
+        self.smooth1 = nn.Sequential(nn.Conv2d(4 * num_filters, num_filters, kernel_size=3, padding=1),
                                      nn.InstanceNorm2d(num_filters),
                                      nn.ReLU())
 
-        self.smooth1 = nn.Sequential(nn.Conv2d(num_filters, num_filters // 2, kernel_size=3, padding=1),
+        self.smooth2 = nn.Sequential(nn.Conv2d(num_filters, num_filters // 2, kernel_size=3, padding=1),
                                      nn.InstanceNorm2d(num_filters // 2),
                                      nn.ReLU())
 
@@ -208,9 +209,9 @@ class FPN_RESNET(nn.Module):
         map3 = tnf.interpolate(self.head2(map3), scale_factor=2, mode="nearest")
         map2 = tnf.interpolate(self.head1(map2), scale_factor=1, mode="nearest")
 
-        smoothed = self.smooth2(torch.cat([map5, map4, map3, map2], dim=1))
+        smoothed = self.smooth1(torch.cat([map5, map4, map3, map2], dim=1))
         smoothed = tnf.interpolate(smoothed, scale_factor=2, mode="nearest")
-        smoothed = self.smooth1(smoothed + map1)
+        smoothed = self.smooth2(smoothed + map1)
         smoothed = tnf.interpolate(smoothed, scale_factor=2, mode="nearest")
 
         final       = self.final(smoothed)
