@@ -3,10 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as tnf
 
 #########################################Resnet fpn#####################################
-class ResnetBackbone(nn.Module):
+class Bottleneck(nn.Module):
     expansion = 4
     def __init__(self, in_planes, planes, stride=1):
-        super(ResnetBackbone, self).__init__()
+        super(Bottleneck, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(planes)
         
@@ -100,9 +100,9 @@ class FPN(nn.Module):
         layers  = []
 
         for val in strides:
-            block  = ResnetBackbone(self.in_planes, planes, val)
+            block  = Bottleneck(self.in_planes, planes, val)
             layers.append(block)
-            self.in_planes = planes * ResnetBackbone.expansion
+            self.in_planes = planes * Bottleneck.expansion
 
         return nn.Sequential(*layers)
 
