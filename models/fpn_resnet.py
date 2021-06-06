@@ -22,9 +22,9 @@ class ResnetBackbone(nn.Module):
         if stride != 1 or in_planes != planes*self.expansion:
             self.downsample = nn.Sequential(nn.Conv2d(in_planes, planes*self.expansion, kernel_size=1, stride=stride, bias=False),
                                             nn.BatchNorm2d(planes*self.expansion))
-    def forward(self, data):
-        #residual = data
-        out = self.conv1(data)
+    def forward(self, input):
+        #residual = input
+        out = self.conv1(input)
         out = self.bn1(out)
         out = self.relu(out)
 
@@ -36,13 +36,13 @@ class ResnetBackbone(nn.Module):
         out = self.bn3(out)
 
         '''if self.downsample is not None:
-            residual = self.downsample(data)
+            residual = self.downsample(input)
         out += residual'''
 
         if self.downsample is None:
-            out += data
+            out += input
         else:
-            out += self.downsample(data)
+            out += self.downsample(input)
 
         out = self.relu(out)
 
