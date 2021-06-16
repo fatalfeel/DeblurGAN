@@ -22,7 +22,7 @@ def CreateDataset(opt):
 class CustomDatasetDataLoader():
     def __init__(self, opt):
         self.opt        = opt
-        kwargs          = {'num_workers': 8, 'pin_memory': True} if len(opt.gpu_ids) > 0 else {}
+        kwargs          = {'num_workers': 8, 'pin_memory': True} if opt.cuda else {}
         self.dataset    = CreateDataset(opt)
         self.dataloader = torch.utils.data.DataLoader(self.dataset,
                                                       batch_size=opt.batchSize,

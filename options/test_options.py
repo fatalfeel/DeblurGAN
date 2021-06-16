@@ -30,7 +30,8 @@ class TestOptions():
         self.parser.add_argument('--n_layers_D',        type=int,       default=3,              help='only used if which_model_netD==n_layers')
         self.parser.add_argument('--n_layers_G',        type=int,       default=3,              help='2 layers features 2^6~2^8, 3 layers features 2^6~2^9')
         self.parser.add_argument('--n_blocks_G',        type=int,       default=12,             help='ResnetBlocks at 6, 9, 12...')
-        self.parser.add_argument('--gpu_ids',           type=str,       default='0',            help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
+        #self.parser.add_argument('--gpu_ids',           type=str,       default='0',            help='gpu ids: e.g. 0  0,1,2, 0,2. use -1 for CPU')
+        self.parser.add_argument('--cuda',              type=str2bool,  default=False,          help='using gpu training')
         self.parser.add_argument('--dataset_mode',      type=str,       default='aligned',      help='chooses how datasets are loaded. [unaligned | aligned | single]')
         self.parser.add_argument('--model',             type=str,       default='test',         help='chooses which model to use. content_gan, pix2pix, test')
         self.parser.add_argument('--which_direction',   type=str,       default='AtoB',         help='AtoB or BtoA')
@@ -57,17 +58,6 @@ class TestOptions():
     def GetOption(self):
         self.opt = self.parser.parse_args()
         self.opt.isTrain = self.isTrain	#train or test
-
-        str_ids = self.opt.gpu_ids.split(',')
-        self.opt.gpu_ids = []
-        for str_id in str_ids:
-            id = int(str_id)
-            if id >= 0:
-                self.opt.gpu_ids.append(id)
-
-        # set gpu ids
-        if len(self.opt.gpu_ids) > 0:
-            torch.cuda.set_device(self.opt.gpu_ids[0])
 
         args = vars(self.opt)
 

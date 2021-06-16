@@ -12,11 +12,10 @@ class TestModel():
 
         self.s_epoch    = 1
         self.opt        = opt
-        self.gpu_ids    = opt.gpu_ids
+        self.gpu_cuda   = opt.cuda
         self.isTrain    = opt.isTrain
-        self.Tensor     = torch.cuda.FloatTensor if len(self.gpu_ids) > 0 else torch.Tensor
+        self.Tensor     = torch.cuda.FloatTensor if self.gpu_cuda else torch.Tensor
         self.save_dir   = opt.checkpoints_dir
-
         self.input_A    = self.Tensor(opt.batchSize, opt.input_nc, opt.fineSize, opt.fineSize)
 
         self.netG       = define_G( opt.input_nc,
@@ -27,7 +26,7 @@ class TestModel():
                                     opt.n_blocks_G,
                                     opt.norm,
                                     not opt.no_dropout,
-                                    self.gpu_ids,
+                                    self.gpu_cuda,
                                     False,
                                     opt.learn_residual)
 
