@@ -28,7 +28,7 @@ def print_network(net):
     for param in net.parameters():
         num_params += param.numel()
     print(net)
-    print('Total number of parameters: %d' % num_params)
+    print('Total number of parameters: %d\n' % num_params)
 
 # Defines the PatchGAN discriminator with the specified arguments.
 class NLayer_Discriminator(nn.Module):
@@ -279,7 +279,6 @@ class Resnet_Generator(nn.Module):
 
 
 # Defines the submodule with skip connection.
-# X -------------------identity---------------------- X
 #   |-- downsampling -- |submodule| -- upsampling --|
 class UnetSkipConnectionBlock(nn.Module):
     def __init__(self,
@@ -444,7 +443,7 @@ def define_G(input_nc,
         raise NotImplementedError('Generator model name [%s] is not recognized' % which_model_netG)'''
 
     if which_model_netG.find('FPN') >= 0:
-        netG = FPN_RESNET(which_model_netG)
+        netG = FPN_RESNET(type=which_model_netG)
     else:
         netG = Resnet_Generator(input_nc,
                                 output_nc,

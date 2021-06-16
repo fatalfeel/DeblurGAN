@@ -9,12 +9,10 @@ from models.net_module import define_G, define_D, print_network
 from models.net_loss import init_loss
 
 class ConditionalGAN():
-	def name(self):
-		return 'ConditionalGANModel'
-
 	def __init__(self, opt):
 		super(ConditionalGAN, self).__init__()
 
+		self.s_epoch 	= 1
 		self.opt 		= opt
 		self.gpu_ids 	= opt.gpu_ids
 		self.isTrain 	= opt.isTrain
@@ -22,56 +20,50 @@ class ConditionalGAN():
 		self.save_dir 	= opt.checkpoints_dir
 
 		# define tensors
-		self.input_A 	= self.Tensor(opt.batchSize, opt.input_nc,  opt.fineSize, opt.fineSize)
-		self.input_B 	= self.Tensor(opt.batchSize, opt.output_nc, opt.fineSize, opt.fineSize)
+		self.input_A 		= self.Tensor(opt.batchSize, opt.input_nc,  opt.fineSize, opt.fineSize)
+		self.input_B 		= self.Tensor(opt.batchSize, opt.output_nc, opt.fineSize, opt.fineSize)
 
-		self.real_A		= None
-		self.real_B 	= None
-		self.fake_A		= None
-		self.fake_B 	= None
+		self.real_A			= None
+		self.real_B 		= None
+		self.fake_A			= None
+		self.fake_B 		= None
 
-		self.loss_D 	= None
-		self.lossG		= None
-		self.lossC		= None
-		self.loss_GC	= None
+		self.loss_D 		= None
+		self.lossG			= None
+		self.lossC			= None
+		self.loss_GC		= None
+
+		self.optimizer_D	= None
+		self.optimizer_G 	= None
 
 		# load/define networks
 		# Temp Fix for nn.parallel as nn.parallel crashes oc calculating gradient penalty
 		#use_parallel = not opt.gan_type == 'wgan-gp'
 
 		use_parallel = False
-		print("Use Parallel = ", "True" if use_parallel else "False")
+		print("Use Parallel = ", "True\n" if use_parallel else "False\n")
 
-		if self.isTrain:
-			use_sigmoid = (opt.gan_type == 'gan')
-			self.netD = define_D(	opt.output_nc,
-									opt.ndf,
-									#opt.which_model_netD,
-									opt.n_layers_D,
-									opt.norm,
-									use_sigmoid,
-									self.gpu_ids,
-									use_parallel	)
+		#if self.isTrain:
+		use_sigmoid = (opt.gan_type == 'gan')
+		self.netD = define_D(opt.output_nc,
+							 opt.ndf,
+							 opt.n_layers_D,
+							 opt.norm,
+							 use_sigmoid,
+							 self.gpu_ids,
+							 use_parallel)
 
-		self.netG = define_G(	opt.input_nc,
-								opt.output_nc,
-								opt.ngf,
-								opt.which_model_netG,
-								opt.n_layers_G,
-								opt.n_blocks_G,
-								opt.norm,
-								not opt.no_dropout,
-								self.gpu_ids,
-								use_parallel,
-								opt.learn_residual	)
-
-		'''if not self.isTrain or opt.continue_train:
-			self.load_network(self.netG, 'G', opt.which_epoch)
-			if self.isTrain:
-				self.load_network(self.netD, 'D', opt.which_epoch)'''
-		if opt.continue_train:
-			self.load_network(self.netD, 'D', opt.which_epoch)
-			self.load_network(self.netG, 'G', opt.which_epoch)
+		self.netG = define_G(opt.input_nc,
+							 opt.output_nc,
+							 opt.ngf,
+							 opt.which_model_netG,
+							 opt.n_layers_G,
+							 opt.n_blocks_G,
+							 opt.norm,
+							 not opt.no_dropout,
+							 self.gpu_ids,
+							 use_parallel,
+							 opt.learn_residual)
 
 		if self.isTrain:
 			#self.fake_AB_pool = ImagePool(opt.pool_size)
@@ -81,18 +73,21 @@ class ConditionalGAN():
 			self.optimizer_D = torch.optim.Adam(self.netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
 			self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999) )
 
-			#self.criticUpdates = 5 if opt.gan_type == 'wgan-gp' else 1
-
 			# define loss functions
 			self.discLoss, self.contentLoss = init_loss(opt, self.Tensor)
 
-		print('---------- Networks initialized -------------')
+		if opt.resume:
+			self.load()
+
+		print('---------- Networks netG -------------')
 		print_network(self.netG)
 		if self.isTrain:
+			print('---------- Networks netD -------------')
 			print_network(self.netD)
-			print_network(self.contentLoss.model)
-		print('-----------------------------------------------')
+			print('---------- Networks contentLoss -------------')
+			print_network(self.contentLoss.vggfeatures)
 
+	'''
 	def NormalizeImg(self, img):
 		nimg = (img - img.min()) / (img.max() - img.min())
 		return nimg
@@ -104,20 +99,36 @@ class ConditionalGAN():
 		plt.title('Batch from dataloader')
 		plt.axis('off')
 		plt.show()
+	'''
 
-	# helper saving function that can be used by subclasses
-	def save_network(self, network, network_label, epoch_label, gpu_ids):
-		save_filename 	= '%s_net_%s.pth' % (epoch_label, network_label)
-		save_path 		= os.path.join(self.save_dir, save_filename)
-		torch.save(network.cpu().state_dict(), save_path)
-		if len(gpu_ids) > 0 and torch.cuda.is_available():
-			network.cuda(device=gpu_ids[0])
+	def name(self):
+		return 'ConditionalGANModel'
 
-	# helper loading function that can be used by subclasses
-	def load_network(self, network, network_label, epoch_label):
-		save_filename = '%s_net_%s.pth' % (epoch_label, network_label)
-		save_path = os.path.join(self.save_dir, save_filename)
-		network.load_state_dict(torch.load(save_path))
+	def save(self, epoch):
+		checkpoint = {'state_dict_D': 	self.netD.state_dict(),
+					  'state_dict_G':	self.netG.state_dict(),
+					  'optimizer_D': 	self.optimizer_D.state_dict(),
+					  'optimizer_G': 	self.optimizer_G.state_dict(),
+					  'epoch': 			epoch}
+		save_path = os.path.join(self.save_dir, f'net_{epoch}.pth')
+		torch.save(checkpoint, save_path)
+
+		last_path = os.path.join(self.save_dir, 'net_last.pth')
+		torch.save(checkpoint, last_path)
+
+	def load(self):
+		last_path 	= os.path.join(self.save_dir, 'net_last.pth')
+		checkpoint	= torch.load(last_path)
+		self.netD.load_state_dict(checkpoint['state_dict_D'])
+		self.netG.load_state_dict(checkpoint['state_dict_G'])
+
+		if self.optimizer_D is not None:
+			self.optimizer_D.load_state_dict(checkpoint['optimizer_D'])
+
+		if self.optimizer_G is not None:
+			self.optimizer_G.load_state_dict(checkpoint['optimizer_G'])
+
+		self.s_epoch = checkpoint['epoch']
 
 	def set_input(self, input):
 		AtoB = self.opt.which_direction == 'AtoB'
@@ -150,33 +161,19 @@ class ConditionalGAN():
 	def get_image_paths(self):
 		return self.image_paths
 
-	'''def backward_D(self):
-		#self.loss_D = self.discLoss.get_loss(self.netD, self.real_A, self.fake_B, self.real_B)
-		self.loss_D = self.discLoss.get_lossD(self.netD,              self.fake_B, self.real_B)
-		self.loss_D.backward(retain_graph=True)
-
-	def backward_G(self):
-		self.lossG		= self.discLoss.get_lossG(self.netD, self.fake_B)
-		#self.lossC is vgg19(fake blurred) and vgg19(original sharp) do mseloss
-		self.lossC 		= self.contentLoss.get_loss(self.fake_B, self.real_B) * self.opt.content_weight
-		self.loss_GC 	= self.lossG + self.lossC
-		self.loss_GC.backward()'''
-
-	def optimize_parameters(self):
+	def train_update(self):
 		self.forward()
 
 		#for iter_d in range(self.criticUpdates): #self.criticUpdates = 1 for gan
 		self.optimizer_D.zero_grad()
-		#self.backward_D()
 		self.loss_D = self.discLoss.get_lossD(self.netD, self.fake_B, self.real_B)
 		self.loss_D.backward(retain_graph=True)
 		self.optimizer_D.step()
 
 		self.optimizer_G.zero_grad()
-		#self.backward_G()
-		self.lossG = self.discLoss.get_lossG(self.netD, self.fake_B)
-		self.lossC = self.contentLoss.get_loss(self.fake_B, self.real_B) * self.opt.content_weight
-		self.loss_GC = self.lossG + self.lossC
+		self.lossG      = self.discLoss.get_lossG(self.netD, self.fake_B)
+		self.lossC      = self.contentLoss.get_loss(self.fake_B, self.real_B) * self.opt.content_weight
+		self.loss_GC	= self.lossG + self.lossC
 		self.loss_GC.backward()
 		self.optimizer_G.step()
 
@@ -191,10 +188,7 @@ class ConditionalGAN():
 		real_B = util.tensor2im(self.real_B.data)
 		return OrderedDict([('Blurred_Train', real_A), ('Restored_Train', fake_B), ('Sharp_Train', real_B)])
 
-	def save(self, label):
-		self.save_network(self.netG, 'G', label, self.gpu_ids)
-		self.save_network(self.netD, 'D', label, self.gpu_ids)
-
+	'''
 	def update_learning_rate(self):
 		lrd = self.opt.lr / self.opt.niter_decay
 		lr 	= self.old_lr - lrd
@@ -204,3 +198,4 @@ class ConditionalGAN():
 			param_group['lr'] = lr
 		print('update learning rate: %f -> %f' % (self.old_lr, lr))
 		self.old_lr = lr
+	'''

@@ -1,5 +1,5 @@
 import torch.nn as nn
-import torchvision.models as models
+import torchvision
 from torch.autograd import Variable
 ###############################################################################
 # Functions
@@ -12,42 +12,40 @@ from torch.autograd import Variable
 	    return self.criterion(fakeIm, realIm)'''
 
 class PerceptualLoss():
-    #def __init__(self, opt, loss):
     def __init__(self, opt):
-        self.opt		= opt
-        self.loss_mse	= nn.MSELoss()
-        self.model		= self.GetModel()
+        self.opt			= opt
+        self.mse_loss		= nn.MSELoss()
+        self.vggfeatures	= self.getFeatures()
 
-    def GetModel(self):
-        #vgg_net	= models.vgg19(pretrained=True).features
-        vgg_net 	= models.vgg16(pretrained=True).features
-        sequence 	= nn.Sequential()
+    def getFeatures(self):
+        end_layer = 16  #layer 0~16, last = Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        vgg_net   = torchvision.models.vgg19(pretrained=True).features
 
-        #vgg_net 	= cnn.cuda()
-        #sequence	= sequence.cuda()
         if len(self.opt.gpu_ids) > 0:
-            vgg_net		= vgg_net.cuda()
-            sequence	= sequence.cuda()
+            vgg_net	= vgg_net.cuda()
 
-        #stop_layer = 14
-        stop_layer = 8	###layers = {'3': 'relu1_2', '8': 'relu2_2'}
+        '''sequence = nn.Sequential()
         for i, layer in enumerate(list(vgg_net)):
             sequence.add_module(str(i), layer)
-            if i == stop_layer:
-                break
+            if i == end_layer:
+                break'''
 
-        return sequence
+        children = list(vgg_net.children())
+        features = children[:end_layer+1]
+        features = nn.Sequential(*features)
+
+        return features
 
     def get_loss(self, fake_B, real_B):
         #f_fake = self.contentFunc.forward(fakeIm)
-        f_fake 			= self.model.forward(fake_B)
+        f_fake 			= self.vggfeatures.forward(fake_B)
 
         #f_real = self.contentFunc.forward(realIm)
-        f_real 			= self.model.forward(real_B)
+        f_real 			= self.vggfeatures.forward(real_B)
         #f_real_no_grad = f_real.detach()
 
-        #loss 			= self.loss_mse(f_fake, f_real_no_grad)
-        loss 			= self.loss_mse(f_fake, f_real.detach())
+        #loss 			= self.mse_loss(f_fake, f_real_no_grad)
+        loss 			= self.mse_loss(f_fake, f_real.detach())
 
         return loss
 		

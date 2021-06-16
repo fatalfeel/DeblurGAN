@@ -9,8 +9,9 @@ def train(opt, data_loader, model, visualizer):
 	dataset = data_loader.load_data()
 	dataset_size = len(data_loader)
 	print('#training images = %d' % dataset_size)
+
 	total_steps = 0
-	for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
+	for epoch in range(model.s_epoch, opt.e_iter):
 		epoch_start_time = time.time()
 		epoch_iter = 0
 		for i, data in enumerate(dataset):
@@ -19,7 +20,7 @@ def train(opt, data_loader, model, visualizer):
 			epoch_iter 		+= opt.batchSize
 
 			model.set_input(data)
-			model.optimize_parameters()
+			model.train_update()
 
 			if total_steps % opt.display_freq == 0:
 				results = model.get_current_visuals()
@@ -34,35 +35,18 @@ def train(opt, data_loader, model, visualizer):
 				if opt.display_id > 0:
 					visualizer.plot_current_errors(epoch, float(epoch_iter)/dataset_size, opt, errors)
 
-			if total_steps % opt.save_latest_freq == 0:
-				print('saving the latest model (epoch %d, total_steps %d)' % (epoch, total_steps))
-				model.save('latest')
-
 		if epoch % opt.save_epoch_freq == 0:
 			print('saving the model at the end of epoch %d, iters %d' % (epoch, total_steps))
-			model.save('latest')
 			model.save(epoch)
 
-		print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
-
-		if epoch > opt.niter:
-			model.update_learning_rate()
-
+		print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.e_iter, time.time() - epoch_start_time))
+		#if epoch > opt.e_iter:
+		#	model.update_learning_rate()
 
 if __name__ == '__main__':
-    #freeze_support()
-
-    #python train.py --dataroot /.path_to_your_data --learn_residual --resize_or_crop crop --fineSize CROP_SIZE (we used 256)
-    #opt.dataroot = '/root/PycharmProjects/DeblurGAN/data/combined'
-    #opt.learn_residual = True
-    #opt.resize_or_crop = "crop"
-    #opt.fineSize = 256
-    #opt.gan_type = "gan"
     opt 					= TrainOptions().GetOption()
-    opt.save_latest_freq	= 100
-    opt.print_freq			= 20
-
     data_loader 			= CreateDataLoader(opt)
     model					= create_model(opt)
     visualizer 				= Visualizer(opt)
     train(opt, data_loader, model, visualizer)
+    print('End Training')

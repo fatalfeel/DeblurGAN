@@ -6,13 +6,11 @@ from collections import OrderedDict
 from models.net_module import define_G, print_network
 
 class TestModel():
-    def name(self):
-        return 'TestModel'
-
     def __init__(self, opt):
         assert(not opt.isTrain)
         super(TestModel, self).__init__()
 
+        self.s_epoch    = 1
         self.opt        = opt
         self.gpu_ids    = opt.gpu_ids
         self.isTrain    = opt.isTrain
@@ -33,26 +31,23 @@ class TestModel():
                                     False,
                                     opt.learn_residual)
 
-        which_epoch = opt.which_epoch
-        self.load_network(self.netG, 'G', which_epoch)
+        #which_epoch = opt.which_epoch
+        #self.load_network(self.netG, 'G', which_epoch)
+        self.load()
 
         print('---------- Networks initialized -------------')
         print_network(self.netG)
         print('-----------------------------------------------')
 
-    # helper saving function that can be used by subclasses
-    def save_network(self, network, network_label, epoch_label, gpu_ids):
-        save_filename   = '%s_net_%s.pth' % (epoch_label, network_label)
-        save_path       = os.path.join(self.save_dir, save_filename)
-        torch.save(network.cpu().state_dict(), save_path)
-        if len(gpu_ids) > 0 and torch.cuda.is_available():
-            network.cuda(device=gpu_ids[0])
+    def name(self):
+        return 'TestModel'
 
     # helper loading function that can be used by subclasses
-    def load_network(self, network, network_label, epoch_label):
-        save_filename = '%s_net_%s.pth' % (epoch_label, network_label)
-        save_path = os.path.join(self.save_dir, save_filename)
-        network.load_state_dict(torch.load(save_path))
+    def load(self):
+        last_path       = os.path.join(self.save_dir, 'net_last.pth')
+        checkpoint      = torch.load(last_path)
+        self.netG.load_state_dict(checkpoint['state_dict_G'])
+        self.s_epoch    = checkpoint['epoch']
 
     def set_input(self, input):
         # we need to use single_dataset mode

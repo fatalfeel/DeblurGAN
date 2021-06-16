@@ -1,4 +1,3 @@
-import os
 from options.test_options import TestOptions
 from data.data_loader import CreateDataLoader
 from models.model_select import create_model
@@ -16,10 +15,10 @@ dataset 	= data_loader.load_data()
 model 		= create_model(opt)
 visualizer 	= Visualizer(opt)
 # create website
-#web_dir = os.path.join(opt.results_dir, opt.name, '%s_%s' % (opt.phase, opt.which_epoch))
-#webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, opt.which_epoch))
-web_dir = opt.results_dir
-webpage = html.HTML(web_dir, 'Experiment, Phase = %s, Epoch = %s' % (opt.phase, opt.which_epoch))
+#web_dir = os.path.join(opt.output_dir, opt.name, '%s_%s' % (opt.phase, model.s_epoch))
+#webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, model.s_epoch))
+web_dir = opt.output_dir
+webpage = html.HTML(web_dir, 'Experiment, Phase = %s, Epoch = %s' % (opt.phase, model.s_epoch))
 # test
 avgPSNR = 0.0
 avgSSIM = 0.0
