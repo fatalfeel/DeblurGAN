@@ -15,27 +15,23 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - bash -x ./install_data.sh
 
 ### Train
-- step 1 open terminal window
-- pip3 install visdom
-- python3 -m visdom.server
-- step 2 open another terminal window
-- cd ~/DeblurGAN
-- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256
-- If you do not want to use visdom.server then skip step 1,2 and use this command
-- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1
-- The netG can generate deblurring image default using ResNet can change to FPN101 to higher quality
-- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --which_model_netG FPN101
+- step 1 open terminal
+- step 2 pip3 install visdom
+- step 3 python3 -m visdom.server
+- step 4 open another terminal
+- step 5 cd ~/DeblurGAN
+- step 6 python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256
+- If you do not want to use visdom.server then skip step 1~6 and use this command
+- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --cuda True
 - Resume training
-- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --which_model_netG FPN101 --resume True
-- If you want to use cpu only to step debug source also do not want to use visdom.server
-- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --gpu_ids -1
+- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --cuda True --resume True
+- Using FPN101
+- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --cuda True --which_model_netG FPN101
 
 ### Test
-- python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single
+- python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --cuda True
 - using FPN101
-- python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --which_model_netG FPN101
-- using cpu only
-- python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --gpu_ids -1
+- python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --cuda True --which_model_netG FPN101
 
 ### Help you understand code
 http://fatalfeel.blogspot.com/2013/12/deblurgan-image-synthesis-and-analysis.html
