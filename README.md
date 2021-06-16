@@ -18,28 +18,23 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - step 1 open terminal window
 - pip3 install visdom
 - python3 -m visdom.server
-
 - step 2 open another terminal window
 - cd ~/DeblurGAN
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256
-
-- If you do not want to use visdom.server then skip step 1,2
+- If you do not want to use visdom.server then skip step 1,2 and use this command
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1
-
 - The netG can generate deblurring image default using ResNet can change to FPN101 to higher quality
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --which_model_netG FPN101
-
 - Resume training
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --which_model_netG FPN101 --resume True
-
 - If you want to use cpu only to step debug source also do not want to use visdom.server
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256 --display_id -1 --gpu_ids -1
 
 ### Test
 - python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single
-- or use FPN101
+- using FPN101
 - python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --which_model_netG FPN101
-- or use cpu only
+- using cpu only
 - python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --gpu_ids -1
 
 ### Help you understand code
