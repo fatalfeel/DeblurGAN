@@ -48,7 +48,7 @@ class TestOptions():
         self.parser.add_argument('--resize_or_crop',    type=str,       default='crop',         help='scaling and cropping of images at load time [resize_and_crop|crop|scale_width|scale_width_and_crop]')
         self.parser.add_argument('--no_flip',           action='store_true',                    help='if specified, do not flip the images for data augmentation')
         self.parser.add_argument('--ntest',             type=int,       default=float("inf"),   help='# of test examples.')
-        self.parser.add_argument('--output_dir',        type=str,       default='./output/',   help='saves results here.')
+        self.parser.add_argument('--output_dir',        type=str,       default='./output',     help='saves results here.')
         self.parser.add_argument('--aspect_ratio',      type=float,     default=1.0,            help='aspect ratio of result images')
         self.parser.add_argument('--phase',             type=str,       default='test',         help='train, val, test, etc')
         self.parser.add_argument('--how_many',          type=int,       default=5000,           help='how many test images to run')
