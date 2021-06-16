@@ -9,7 +9,7 @@ Our network takes blurry image as an input and procude the corresponding sharp e
 The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptual loss based on VGG-19 activations. Such architecture also gives good results on other image-to-image translation problems (super resolution, colorization, inpainting, dehazing etc.)
 
 ### Prerequisites data
-- cd /root/PycharmProjects/DeblurGAN
+- cd ~/DeblurGAN
 - ./install_data.sh
 - or
 - bash -x ./install_data.sh
