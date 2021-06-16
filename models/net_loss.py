@@ -14,18 +14,15 @@ from torch.autograd import Variable
 
 class PerceptualLoss():
     def __init__(self, opt):
-        #self.opt			= opt
-        device 				= torch.device("cuda" if opt.cuda else "cpu")
-        self.mse_loss		= nn.MSELoss()
-        self.vggfeatures	= self.getFeatures().to(device)
+        device           = torch.device("cuda" if opt.cuda else "cpu")
+        self.vggfeatures = self.getFeatures().to(device)
+        self.mse_loss    = nn.MSELoss()
 
 	#get vgg19 layer 0~16, end = Conv2d(256, 256, kernel_size=(3), stride=(1), padding=(1))
     def getFeatures(self):
         end_layer = 16
         vgg_net   = torchvision.models.vgg19(pretrained=True).features
 
-        #if self.opt.cuda:
-        #	vgg_net	= vgg_net.cuda()
         '''sequence = nn.Sequential()
         for i, layer in enumerate(list(vgg_net)):
             sequence.add_module(str(i), layer)
