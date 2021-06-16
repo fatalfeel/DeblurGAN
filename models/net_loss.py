@@ -18,7 +18,7 @@ class PerceptualLoss():
         self.vggfeatures = self.getFeatures().to(device)
         self.mse_loss    = nn.MSELoss()
 
-	#get vgg19 layer 0~16, end = Conv2d(256, 256, kernel_size=(3), stride=(1), padding=(1))
+    #get vgg19 layer 0~16, end = Conv2d(256, 256, kernel_size=(3), stride=(1), padding=(1))
     def getFeatures(self):
         end_layer = 16
         vgg_net   = torchvision.models.vgg19(pretrained=True).features
