@@ -37,14 +37,14 @@ class PerceptualLoss():
 
     def get_loss(self, fake_B, real_B):
         #f_fake = self.contentFunc.forward(fakeIm)
-        f_fake 			= self.features.forward(fake_B)
+        f_fake  = self.features.forward(fake_B)
 
         #f_real = self.contentFunc.forward(realIm)
-        f_real 			= self.features.forward(real_B)
+        f_real  = self.features.forward(real_B)
         #f_real_no_grad = f_real.detach()
 
-        #loss 			= self.mse_loss(f_fake, f_real_no_grad)
-        loss 			= self.mse_loss(f_fake, f_real.detach())
+        #loss 	= self.mse_loss(f_fake, f_real_no_grad)
+        loss    = self.mse_loss(f_fake, f_real.detach())
 
         return loss
 		
