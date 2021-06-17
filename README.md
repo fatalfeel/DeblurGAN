@@ -20,7 +20,7 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - step 3 python3 -m visdom.server
 - step 4 open another terminal
 - step 5 cd ~/DeblurGAN
-- step 6 python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --fineSize 256
+- step 6 python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --cuda True
 - If you do not want to use visdom.server then skip step 1~6 and use this command
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True
 - Resume training
