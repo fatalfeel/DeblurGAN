@@ -85,7 +85,7 @@ class ConditionalGAN():
 			print('---------- Networks netD -------------')
 			print_network(self.netD)
 			print('---------- Networks contentLoss -------------')
-			print_network(self.contentLoss.features)
+			print_network(self.contentLoss.vgg_features)
 
 	'''
 	def NormalizeImg(self, img):
