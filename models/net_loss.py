@@ -215,17 +215,16 @@ class DiscLossWGANGP():
         return self.loss_D + gradient_penalty
 
 def init_loss(opt, tensor):
-    disc_loss       = None
-    content_loss    = None
+    disc_loss = None
 
     if opt.gan_type == 'wgan-gp':
         disc_loss = DiscLossWGANGP(opt, tensor)
     else:
         disc_loss = DiscriminatorLoss(opt, tensor)
 
-    if opt.model == 'content_gan':
+    #if opt.model == 'content_gan':
         #content_loss = PerceptualLoss(nn.MSELoss())
-        content_loss = PerceptualLoss(opt)
+    content_loss = PerceptualLoss(opt)
 
     '''elif opt.model == 'pix2pix':
         content_loss = ContentLoss()
