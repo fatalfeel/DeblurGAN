@@ -23,10 +23,10 @@ class TestOptions():
         self.parser.add_argument('--ngf',               type=int,       default=64,                 help='# of gen filters in first conv layer')
         self.parser.add_argument('--ndf',               type=int,       default=64,                 help='# of discrim filters in first conv layer')
 
-        self.parser.add_argument('--which_model_netG',  type=str,       default='RESNET',       help='FPN50, FPN101, FPN152, RESNET')
+        self.parser.add_argument('--which_model_netG',  type=str,       default='RESNET',       help='RESNET, FPN50, FPN101, FPN152')
         self.parser.add_argument('--learn_residual',    type=str2bool,  default=True,           help='if specified, model would learn only the residual to the input')
         self.parser.add_argument('--resume',            type=str2bool,  default=False,          help='continue training')
-        self.parser.add_argument('--gan_type',          type=str,       default='gan',          help='gan : Vanilla GAN, wgan-gp : Wasserstein GAN with Gradient Penalty, lsgan : Least Sqaures GAN')
+        self.parser.add_argument('--gan_type',          type=str,       default='gan',          help='gan is faster, wgan-gp is stable')
         self.parser.add_argument('--n_layers_D',        type=int,       default=3,              help='only used if which_model_netD==n_layers')
         self.parser.add_argument('--n_layers_G',        type=int,       default=3,              help='2 layers features 2^6~2^8, 3 layers features 2^6~2^9')
         self.parser.add_argument('--n_blocks_G',        type=int,       default=12,             help='ResnetBlocks at 6, 9, 12...')
