@@ -25,7 +25,7 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True
 - Resume training
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True --resume True
-- Using FPN101
+- Using FPN101 and wgan-gp
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True --which_model_netG FPN101 --gan_type wgan-gp
 
 ### Test
