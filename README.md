@@ -22,11 +22,11 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - step 5 cd ~/DeblurGAN
 - step 6 python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --cuda True
 - If you do not want to use visdom.server then skip step 1~6 and use these commands
-- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True
+python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True
 - Resume training
-- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True --resume True
+python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True --resume True
 - Using FPN101 and wgan-gp
-- python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True --which_model_netG FPN101 --gan_type wgan-gp
+python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True --which_model_netG FPN101 --gan_type wgan-gp
 
 ### Test
 - python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --cuda True
