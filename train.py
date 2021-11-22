@@ -11,7 +11,7 @@ def train(opt, data_loader, model, visualizer):
 	print('#training images = %d' % dataset_size)
 
 	total_steps = 0
-	for epoch in range(model.s_epoch, opt.e_iter):
+	for epoch in range(model.s_epoch, opt.e_iter+1):
 		epoch_start_time = time.time()
 		epoch_iter = 0
 		for i, data in enumerate(dataset):
