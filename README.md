@@ -23,14 +23,14 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - step 6 python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --cuda True
 - If you do not want to use visdom.server then skip step 1~6 and use these commands
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True
-- [Resume training]
+- [----------Resume training--------------]
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True --resume True
-- [FPN101 and Wgan-gp]
+- [----------FPN101 and Wgan-gp------]
 - python3 ./train.py --dataroot ./data/combined --resize_or_crop crop --display_id -1 --cuda True --which_model_netG FPN101 --gan_type wgan-gp
 
 ### Test
 - python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --cuda True
-- [FPN101]
+- [----------FPN101----------]
 - python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --cuda True --which_model_netG FPN101
 
 ### Help you understand code
