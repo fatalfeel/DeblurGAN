@@ -16,7 +16,7 @@ def train(opt, data_loader, model, visualizer):
 		epoch_iter = 0
 		for i, data in enumerate(dataset):
 			iter_start_time  = time.time()
-			total_steps += opt.batchSize
+			total_steps	+= opt.batchSize
 			epoch_iter	+= opt.batchSize
 
 			model.set_input(data)
