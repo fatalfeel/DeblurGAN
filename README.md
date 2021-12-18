@@ -33,5 +33,8 @@ The model we use is Conditional Wasserstein GAN with Gradient Penalty + Perceptu
 - [----------FPN101----------]
 - python3 ./test.py --dataroot ./data/blurred --model test --dataset_mode single --cuda True --which_model_netG FPN101
 
+### Model trained 2000 times
+https://drive.google.com/file/d/1vGiqFXa177sCGHEuKhDKQ0VxvZZ2qpZg
+
 ### Help you understand code
 http://fatalfeel.blogspot.com/2013/12/deblurgan-image-synthesis-and-analysis.html
