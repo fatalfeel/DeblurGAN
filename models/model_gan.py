@@ -11,13 +11,13 @@ from models.net_loss import init_loss
 class ConditionalGAN():
     def __init__(self, opt):
         super(ConditionalGAN, self).__init__()
-        
-        self.s_epoch 	= 1
-        self.opt         = opt
-        self.gpu_cuda 	= opt.cuda
-        self.isTrain 	= opt.isTrain
-        self.Tensor 	= torch.cuda.FloatTensor if self.gpu_cuda else torch.Tensor
-        self.save_dir 	= opt.checkpoints_dir
+
+        self.s_epoch    = 1
+        self.opt        = opt
+        self.gpu_cuda   = opt.cuda
+        self.isTrain    = opt.isTrain
+        self.Tensor     = torch.cuda.FloatTensor if self.gpu_cuda else torch.Tensor
+        self.save_dir   = opt.checkpoints_dir
         
         # define tensors
         self.input_A         = self.Tensor(opt.batchSize, opt.input_nc,  opt.fineSize, opt.fineSize)
