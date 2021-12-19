@@ -13,11 +13,11 @@ def train(opt, data_loader, model, visualizer):
 	total_steps = 0
 	for epoch in range(model.s_epoch+1, opt.e_epoch+1):
 		epoch_start_time = time.time()
-		iters = 0
+		epiter = 0
 		for _, data in enumerate(dataset):
 			iter_start_time  = time.time()
 			total_steps	+= opt.batchSize
-			iters		+= opt.batchSize
+			epiter		+= opt.batchSize
 
 			model.set_input(data)
 			model.train_update()
@@ -31,9 +31,9 @@ def train(opt, data_loader, model, visualizer):
 			if total_steps % opt.print_freq == 0:
 				errors = model.get_current_errors()
 				t = (time.time() - iter_start_time) / opt.batchSize
-				visualizer.print_current_errors(epoch, iters, errors, t)
+				visualizer.print_current_errors(epoch, epiter, errors, t)
 				if opt.display_id > 0:
-					visualizer.plot_current_errors(epoch, float(iters)/dataset_size, opt, errors)
+					visualizer.plot_current_errors(epoch, float(epiter)/dataset_size, opt, errors)
 
 		if epoch % opt.save_epoch_freq == 0:
 			print('saving the model at the end of epoch %d, iters %d' % (epoch, total_steps))
