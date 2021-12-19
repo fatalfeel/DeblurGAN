@@ -18,7 +18,7 @@ visualizer 	= Visualizer(opt)
 #web_dir = os.path.join(opt.output_dir, opt.name, '%s_%s' % (opt.phase, model.s_epoch))
 #webpage = html.HTML(web_dir, 'Experiment = %s, Phase = %s, Epoch = %s' % (opt.name, opt.phase, model.s_epoch))
 web_dir = opt.output_dir
-webpage = html.HTML(web_dir, 'Experiment, Phase = %s, Epoch = %s' % (opt.phase, model.s_epoch))
+webpage = html.HTML(web_dir, 'Experiment, Phase = %s, Epoch = %s' % (opt.phase, model.s_epoch+1))
 # test
 avgPSNR = 0.0
 avgSSIM = 0.0

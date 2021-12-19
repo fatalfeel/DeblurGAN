@@ -12,7 +12,7 @@ class ConditionalGAN():
     def __init__(self, opt):
         super(ConditionalGAN, self).__init__()
 
-        self.s_epoch    = 1
+        self.s_epoch    = 0
         self.opt        = opt
         self.gpu_cuda   = opt.cuda
         self.isTrain    = opt.isTrain
