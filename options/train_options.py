@@ -50,7 +50,7 @@ class TrainOptions():
         self.parser.add_argument('--print_freq',        type=int,       default=20,             help='frequency of showing training results on console')
         self.parser.add_argument('--save_epoch_freq',   type=int,       default=10,             help='frequency of saving checkpoints at the end of epochs')
         self.parser.add_argument('--phase',             type=str,       default='train',        help='train, val, test, etc')
-        self.parser.add_argument('--e_iter',            type=int,       default=2000,           help='number repeat to train')
+        self.parser.add_argument('--e_epoch',           type=int,       default=2000,           help='number repeat to train')
         self.parser.add_argument('--beta1',             type=float,     default=0.5,            help='momentum term of adam')
         self.parser.add_argument('--lr',                type=float,     default=0.00001,        help='initial learning rate for adam')
         self.parser.add_argument('--content_weight',    type=float,     default=100.0,          help='fast-neural-style content weight')

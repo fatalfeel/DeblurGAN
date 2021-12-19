@@ -11,7 +11,7 @@ def train(opt, data_loader, model, visualizer):
 	print('#training images = %d' % dataset_size)
 
 	total_steps = 0
-	for epoch in range(model.s_epoch+1, opt.e_iter+1):
+	for epoch in range(model.s_epoch+1, opt.e_epoch+1):
 		epoch_start_time = time.time()
 		epoch_iter = 0
 		for _, data in enumerate(dataset):
@@ -39,8 +39,9 @@ def train(opt, data_loader, model, visualizer):
 			print('saving the model at the end of epoch %d, iters %d' % (epoch, total_steps))
 			model.save(epoch)
 
-		print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.e_iter, time.time() - epoch_start_time))
-		#if epoch > opt.e_iter:
+		print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.e_epoch, time.time() - epoch_start_time))
+
+		#if epoch > opt.e_epoch:
 		#	model.update_learning_rate()
 
 if __name__ == '__main__':
